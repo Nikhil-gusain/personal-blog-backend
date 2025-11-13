@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from mongoengine import connect
-from dotenv import load_dotenv
-import os
-# Load environment variables
-load_dotenv()
+import os 
+import environ
+env = environ.Env()
+environ.Env.read_env()
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +37,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Application definition
 
 INSTALLED_APPS = [
-    "django_mongoengine",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -84,22 +83,18 @@ WSGI_APPLICATION = 'PortfolioBackend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-MONGODB_DATABASES = {
-    "default": {
-        "name": os.getenv("MONGO_DB_NAME"),
-        "host": os.getenv("MONGO_URI"),
+DATABASES = {
+        'default':dj_database_url.parse(os.environ.get("DATABASE_URL")),
+        # 'default': {
+        #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #     'NAME': env('DATABASE'),
+        #     'USER': env('DATABASE_USERNAME'),
+        #     'PASSWORD': env('DATABASE_PASSWORD'),
+        #     'HOST': env('DATABASE_HOST'),
+        #     'PORT': env('DATABASE_PORT'),
+        # }
     }
-}
-
-SESSION_ENGINE = 'django_mongoengine.sessions'
-SESSION_SERIALIZER = 'django_mongoengine.sessions.BSONSerializer'
-
-# Connect (alternatively)
-# connect(
-#     db=os.getenv("MONGO_DB_NAME"),
-#     host=os.getenv("MONGO_URI")
-# )
-
+# print(DATABASES)
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
