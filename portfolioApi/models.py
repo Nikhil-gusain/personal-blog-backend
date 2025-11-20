@@ -1,6 +1,6 @@
 from django.db import models
 from django_quill.fields import QuillField
-from PortfolioBackend.Utils import Helpers
+from PortfolioBackend.Utils.Helpers import Helpers
 from django.contrib.auth.models import User
 from django_quill.fields import QuillField
 # Create your models here.
@@ -16,17 +16,20 @@ class About(models.Model):
     designation = models.TextField()
     bio = models.TextField()
     profileImage = models.URLField(max_length=2500)
-    details = models.JSONField(default=dict)
+    details = models.JSONField(default=dict,help_text='{"Phone": "Ph no","Email": "email","Address": "Address","Language": "English, Hindi (Multilingual abilities)"}')
     cvLink = models.URLField(max_length=2500)
 
 class Skills(models.Model):
     name = models.CharField(max_length=200)
     percent = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 class Blogs(models.Model):
     title = models.CharField(max_length=200)
     excerpt = models.TextField(help_text="Meta description for the blog post")
-    coverImage = models.URLField(max_length=2500)
+    coverImage = models.URLField(max_length=2500, blank=True, null=True)
     temp_image = models.ImageField(upload_to='temp/', blank=True, null=True)
     content = QuillField()
     readMin = models.IntegerField(default=0)
@@ -40,8 +43,9 @@ class Blogs(models.Model):
         self.readMin = Helpers.CalculateReadingTime(self.content.html)
 
         # Upload to Google Drive if a file is uploaded
+        super().save(*args, **kwargs)
         if self.temp_image:
-            gdrive_url = Helpers.upload_file_to_gdrive(self.temp_image.path, self.temp_image.name)
+            gdrive_url = Helpers.uploadToDrive(file_path=self.temp_image.path,file_name= self.temp_image.name,folder_id='1E4WMmR5g8GIiT6DLrndCtoJTFqSwcgM2')
             self.coverImage = gdrive_url
             self.temp_image.delete(save=False)  # Delete local file
 
@@ -59,7 +63,7 @@ class SkillSection(models.Model):
 class Services(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    icon = models.URLField(max_length=2500)
+    icon = models.CharField(max_length=2500)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     createdAt = models.DateTimeField(auto_now=True)
 
@@ -83,18 +87,8 @@ class SocialLinks(models.Model):
     url = models.URLField(max_length=2500)
 
     def __str__(self):
-        return self.name
+        return self.icon
 
-
-class HeroSection(models.Model):
-    page = models.ForeignKey(Pages, on_delete=models.CASCADE, null=True)
-    title = models.CharField(max_length=200)
-    highlight = models.CharField(max_length=200)
-    subtitle = models.TextField()
-    socialLinks = models.ManyToManyField(SocialLinks, blank=True)
-
-    def __str__(self):
-        return f'{self.page.name} - Hero Section'
     
 class ContactSection(models.Model):
     title = models.CharField(max_length=200)
