@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-# Fetch parameters from SSM and export as env vars
+# Set AWS region if not already set
+export AWS_REGION=${AWS_REGION:-ap-south-1}
+
+# Fetch parameter from SSM
 export DATABASE_URL=$(aws ssm get-parameter \
   --name "/portfolio/dburi" \
-  --with-decryption \
   --query "Parameter.Value" \
   --output text)
 
-# optional: echo variable names only (not values) to logs for debugging
 echo "Loaded SSM params: DATABASE_URL"
 
-# Start Django (gunicorn, uvicorn, etc.)
+# Run passed command
 exec "$@"
