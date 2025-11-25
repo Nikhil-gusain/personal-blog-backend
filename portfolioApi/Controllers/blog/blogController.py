@@ -12,7 +12,12 @@ class BLOG_CONTROLLER:
     def GetBlogsforApi(self):
         try:
             blogs = Blogs.objects.all().order_by('-createdAt')[:6]
-            blogdata=[BLOG_TASKS.GetBlogsForShowApi(blog) for blog in blogs]
+            blogdata:list=[]
+            for blog in blogs:
+                status,blogresp=BLOG_TASKS.GetBlogsForShowApi(blog)
+                if status:
+                    blogdata.append(blogresp)
+
             return LocalResponse(
                 message=RESPONSE_MESSAGES.BLOG_FETCHED_SUCCESSFULLY,
                 data=blogdata,

@@ -13,11 +13,17 @@ class PORTFOLIO_CONTROLLER:
     def GetAboutData(self):
         try:
             about = About.objects.first()
-            aboutData=PORTFOLIO_TASKS.GetAboutData(about)
+            status,aboutData=PORTFOLIO_TASKS.GetAboutData(about)
+            if status:
+                return LocalResponse(
+                    message=RESPONSE_MESSAGES.ABOUT_FETCHED_SUCCESSFULLY,
+                    data=aboutData,
+                    code=RESPONSE_CODES.SUCCESS
+                )
             return LocalResponse(
-                message=RESPONSE_MESSAGES.ABOUT_FETCHED_SUCCESSFULLY,
+                message=RESPONSE_MESSAGES.ABOUT_FETCHED_ERROR,
                 data=aboutData,
-                code=RESPONSE_CODES.SUCCESS
+                code=RESPONSE_CODES.ERROR
             )
         except Exception as e:
             return LocalResponse(
@@ -30,16 +36,26 @@ class PORTFOLIO_CONTROLLER:
     def GetServiceSection(self):
         try:
             serviceSection = ServiceSection.objects.first()
-            servicesData=[PORTFOLIO_TASKS.GetServicesData(service) for service in serviceSection.services.all()]
+            servicesData=[]
+            for service in serviceSection.services.all():
+                status,serviceResp=PORTFOLIO_TASKS.GetServicesData(service)
+                if status:
+                    servicesData.append(serviceResp)
             sectionData= {
                 NAMES.TITLE:serviceSection.title,
                 NAMES.SUBTITLE:serviceSection.subtitle,
                 NAMES.SERVICES:servicesData
             }
+            if status:
+                return LocalResponse(
+                    message=RESPONSE_MESSAGES.SERVICES_FETCHED_SUCCESSFULLY,
+                    data=sectionData,
+                    code=RESPONSE_CODES.SUCCESS
+                )
             return LocalResponse(
-                message=RESPONSE_MESSAGES.SERVICES_FETCHED_SUCCESSFULLY,
-                data=sectionData,
-                code=RESPONSE_CODES.SUCCESS
+                message=RESPONSE_MESSAGES.SERVICES_FETCHED_ERROR,
+                data=servicesData,
+                code=RESPONSE_CODES.ERROR
             )
         except Exception as e:
             return LocalResponse(
@@ -51,11 +67,17 @@ class PORTFOLIO_CONTROLLER:
     def GetContactSection(self):
         try:
             contactSection = ContactSection.objects.first()
-            contactData=PORTFOLIO_TASKS.GetContactData(contactSection)
+            status,contactData=PORTFOLIO_TASKS.GetContactData(contactSection)
+            if status:
+                return LocalResponse(
+                    message=RESPONSE_MESSAGES.CONTACT_FETCHED_SUCCESSFULLY,
+                    data=contactData,
+                    code=RESPONSE_CODES.SUCCESS
+                )
             return LocalResponse(
-                message=RESPONSE_MESSAGES.CONTACT_FETCHED_SUCCESSFULLY,
+                message=RESPONSE_MESSAGES.CONTACT_FETCHED_ERROR,
                 data=contactData,
-                code=RESPONSE_CODES.SUCCESS
+                code=RESPONSE_CODES.ERROR
             )
         except Exception as e:
             return LocalResponse(

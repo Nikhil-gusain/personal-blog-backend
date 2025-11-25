@@ -14,7 +14,11 @@ class SKILLS_CONTROLLER:
     def GetAllSkillsData(self):
         try:
             skills = Skills.objects.all()
-            skilldata=[SKILLS_TASKS.GetSkillsData(skill) for skill in skills]
+            skilldata:list=[]
+            for skill in skills:
+                status,skillresp=SKILLS_TASKS.GetSkillsData(skill)
+                if status:
+                    skilldata.append(skillresp)
             return LocalResponse(
                 message=RESPONSE_MESSAGES.SKILLS_FETCHED_SUCCESSFULLY,
                 data=skilldata,
@@ -31,11 +35,12 @@ class SKILLS_CONTROLLER:
     def GetSkillSection(self):
         try:
             skillsection = SkillSection.objects.first()
-            skillsData=[SKILLS_TASKS.GetSkillsData(skill) for skill in skillsection.skills.all()]
+            skillResp = self.GetAllSkillsData()
+            skillsData=skillResp.data
             sectionData= {
                 NAMES.TITLE:skillsection.sectionTitle,
                 NAMES.INTRO:skillsection.intro,
-                NAMES.SKILLS:skillsData
+                NAMES.SKILLS:skillsData if skillResp.code==RESPONSE_CODES.SUCCESS else [] 
             }
             return LocalResponse(
                 message=RESPONSE_MESSAGES.SKILLS_FETCHED_SUCCESSFULLY,

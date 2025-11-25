@@ -13,7 +13,7 @@ class PORTFOLIO_TASKS:
                 NAMES.DESIGNATION:about.designation,
                 NAMES.BIO:about.bio,
                 NAMES.PROFILE_IMAGE:about.profileImage,
-                NAMES.DETAILS:json.loads(about.details.replace("'",'"')),
+                NAMES.DETAILS:about.details,
                 NAMES.CV_LINK:about.cvLink
             }
             return True,aboutData
@@ -28,7 +28,7 @@ class PORTFOLIO_TASKS:
                 NAMES.TITLE:service.title,
                 NAMES.DESCRIPTION:service.description,
                 NAMES.ICON:service.icon,
-                NAMES.AUTHOR:service.author,
+                NAMES.AUTHOR:service.author.username,
                 NAMES.CREATED_AT:service.createdAt
             }
             return True,serviceData
@@ -50,11 +50,16 @@ class PORTFOLIO_TASKS:
     @classmethod
     def GetContactData(self,contact:ContactSection):
         try:
+            socialData:list = []
+            for social in contact.socialLinks.all():
+                status,socialresp=self.GetSocialData(social)
+                if status:
+                    socialData.append(socialresp)
             contactData={
                 NAMES.ID:contact.id,
                 NAMES.TITLE:contact.title,
-                NAMES.INFO:json.loads(contact.info.replace("'",'"')),
-                NAMES.SOCIAL_LINKS:[self.GetSocialData(social) for social in contact.socialLinks.all()]
+                NAMES.INFO:contact.info,
+                NAMES.SOCIAL_LINKS:socialData
             }
             return True,contactData
         except Exception as e:
