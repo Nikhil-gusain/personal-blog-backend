@@ -10,7 +10,7 @@ export DATABASE_URL=$(aws ssm get-parameter \
   --query "Parameter.Value" \
   --output text)
 
-echo "Loaded SSM params: DATABASE_URL"
+echo "Loaded SSM params: DATABASE_URL=$DATABASE_URL"
 
 # Run passed command
 exec "$@"
