@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'PortfolioBackend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-print(f"url = {os.environ.get("DATABASE_URL")}")
+print(f'url = {os.environ.get("DATABASE_URL")}')
 
 DATABASES = {
-        'default':dj_database_url.parse(os.environ.get("DATABASE_URL")),
+        'default':dj_database_url.parse(f'os.environ.get("DATABASE_URL")'),
         # 'default': {
         #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
         #     'NAME': env('DATABASE'),
