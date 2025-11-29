@@ -23,21 +23,22 @@ COPY requirements.txt /PortfolioBackend/
 # Install Python dependencies
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy project source
+# Copy project
 COPY . /PortfolioBackend
-
-# Create non-root user
-RUN useradd --create-home appuser
-RUN chown -R appuser:appuser /PortfolioBackend
-USER appuser
-
-# Make directory for logs/static
-RUN mkdir -p /PortfolioBackend/staticfiles
-
-EXPOSE 8000
 
 # Entrypoint
 COPY ./entrypoint.sh /PortfolioBackend/entrypoint.sh
 RUN chmod +x /PortfolioBackend/entrypoint.sh
 
+# Create non-root user for security
+RUN useradd --create-home appuser
+RUN chown -R appuser:appuser /PortfolioBackend
+USER appuser
+
+# Make a directory for logs/static under the appuser
+RUN mkdir -p /PortfolioBackend/staticfiles
+
+EXPOSE 8000
+
 CMD ["/PortfolioBackend/entrypoint.sh"]
+
