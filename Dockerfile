@@ -32,7 +32,7 @@ RUN chown -R appuser:appuser /PortfolioBackend
 USER appuser
 
 # Make directory for logs/static
-RUN mkdir -p /app/staticfiles
+RUN mkdir -p /PortfolioBackend/staticfiles
 
 EXPOSE 8000
 
