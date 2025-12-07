@@ -16,6 +16,7 @@ class BLOG_TASKS:
         try:
             blogdata={
                 NAMES.TITLE:blog.title,
+                NAMES.SLUG:blog.slug,
                 NAMES.EXCERPT:blog.excerpt,
                 NAMES.COVER_IMAGE:blog.coverImage,
                 NAMES.CREATED_AT:blog.createdAt,

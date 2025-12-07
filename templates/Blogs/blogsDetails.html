@@ -1,0 +1,61 @@
+{% include "index.html"%}
+{% load static%}
+
+{% block main%}
+   <main class="container">
+      {% comment %} <header>
+        <div style="display: flex; gap: 12px; align-items: center">
+          <div
+            style="
+              width: 44px;
+              height: 44px;
+              border-radius: 10px;
+              background: linear-gradient(180deg, var(--accent), #7c3aed);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: white;
+              font-weight: 700;
+            "
+          >
+            NG
+          </div>
+          <div>
+            <div style="font-weight: 700">Nikhil Gusain</div>
+            <div style="font-size: 13px; color: var(--muted)">
+              Engineering blog
+            </div>
+          </div>
+        </div>
+        <nav class="primary">
+            <a class="link" href={% url "blogPage" %} >Home</a>
+          <a class="link" href="/projects">Projects</a>
+          <a class="link" href="/contact">Contact</a>
+          <a class="cta" href="/resume.pdf">Resume</a>
+        </nav>
+      </header> {% endcomment %}
+      {% include "Blogs/components/header.html" %}
+
+      <div class="hero">
+        <img
+          src={{blog.coverImage}}
+          alt="hero"
+        />
+      </div>
+
+      <article class="article-content">
+        <div class="kicker">{{blog.category.name}}</div>
+        <h1>{{blog.title}}</h1>
+        <div class="meta">
+          {{blog.createdAt}} · {{blog.readMin}} min read ·
+          <span
+            style="margin-left: auto; color: var(--accent); font-weight: 600"
+            >Share</span
+          >
+        </div>
+         {{blog.content.html|safe}}
+
+        </div>
+      </article>
+    </main>
+{% endblock%}

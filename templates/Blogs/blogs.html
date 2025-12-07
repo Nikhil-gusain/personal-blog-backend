@@ -1,0 +1,135 @@
+{% extends "index.html"%} {% load static%} {% block main %}
+<main class="container">
+  {% include "Blogs/components/header.html" %} {% comment %}
+  <header class="site-header">
+    <div class="logo">
+      <div class="brand-mark">NG</div>
+      <div>
+        <div class="site-title">Nikhil Gusain</div>
+        <div style="font-size: 13px; color: var(--muted)">
+          Django · DevOps · Backend engineering
+        </div>
+      </div>
+    </div>
+    <nav class="primary">
+      <a class="link" href="/">Home</a>
+      <a class="link" href="/projects">Projects</a>
+      <a class="link" href="/contact">Contact</a>
+      <a class="cta" href="/resume.pdf">Resume</a>
+    </nav>
+  </header>
+  {% endcomment %}
+
+  <section class="page-head">
+    <div>
+      <div class="title">Articles</div>
+      <div class="small">Notes, walkthroughs, and engineering writing.</div>
+    </div>
+    <div class="meta-search">
+      <div class="tag">Engineering</div>
+      
+      {% comment %} <div class="search">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          style="margin-right: 8px"
+        >
+          <path
+            d="M21 21l-4.35-4.35"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <input placeholder="Search articles" aria-label="Search articles" />
+      </div> {% endcomment %}
+    </div>
+  </section>
+
+  <div class="grid">
+    <section>
+      <div class="card post-list">
+        <!-- Repeat .post for each article (you can render server-side) -->
+        {% include "Blogs/components/articles.html" with articles=articles%}
+
+
+        <!-- Pagination -->
+        <nav class="pagination" aria-label="Pagination">
+
+          {% if page_obj.has_previous %}
+            <a class="page-btn" href="?page={{ page_obj.previous_page_number }}">Prev</a>
+          {% else %}
+            <span class="page-btn disabled">Prev</span>
+          {% endif %}
+
+          {% for page in page_obj.paginator.page_range %}
+            {% if page == page_obj.number %}
+              <span class="page-btn active">{{ page }}</span>
+            {% else %}
+              <a class="page-btn" href="?page={{ page }}">{{ page }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <a class="page-btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+          {% else %}
+            <span class="page-btn disabled">Next</span>
+          {% endif %}
+
+        </nav>
+
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="card sidebar-section">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+          "
+        >
+          <div style="font-weight: 700">About</div>
+          <div class="small"></div>
+        </div>
+        <div class="small">
+          I share practical insights from my journey in backend engineering covering Docker, AWS, and real-world DevOps patterns. I try to break down complex concepts into clear, beginner-friendly lessons.
+        </div>
+      </div>
+
+      {% comment %} <div class="card sidebar-section">
+        <div style="font-weight: 700; margin-bottom: 8px">Popular</div>
+        <div class="popular-list">
+          <a class="popular-item" href="/blog/how-to-dockerize">
+            <div class="mini">
+              <img
+                src="https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=400&auto=format&fit=crop"
+                style="width: 100%; height: 100%; object-fit: cover"
+              />
+            </div>
+            <div style="font-size: 14px">How I structure Dockerfiles</div>
+          </a>
+          <a class="popular-item" href="/blog/aws-params">
+            <div class="mini"></div>
+            <div style="font-size: 14px">Parameter Store patterns</div>
+          </a>
+        </div>
+      </div> {% endcomment %}
+
+      <div class="card sidebar-section">
+        <div style="font-weight: 700; margin-bottom: 8px">Tags</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          {% for tag in tags %} 
+          <a class="tag" href= {% url "blogbytag" tag.name%}>{{tag.name}}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+{% endblock %}

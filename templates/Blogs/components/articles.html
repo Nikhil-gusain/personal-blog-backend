@@ -1,0 +1,29 @@
+{% for article in articles %}
+  <article class="post">
+    <a class="thumb" href="{% url 'blogDetailPage' article.slug %}">
+      <img src="{{ article.coverImage }}" alt="{{ article.title }}" />
+    </a>
+    <div class="post-body">
+      <div>
+        <a href="{% url 'blogbytag' article.category.name %}" class="tag">{{ article.category.name }}</a>
+        <h3>
+          <a style="color: inherit; text-decoration: none"
+            href="{% url 'blogDetailPage' article.slug %}">
+            {{ article.title }}
+          </a>
+        </h3>
+        <p class="excerpt">
+          {{ article.excerpt }}
+        </p>
+      </div>
+      <div class="post-meta">
+        <div>{{ article.createdAt }}</div>
+        <div>·</div>
+        <div>{{ article.readMin }} min read</div>
+        <a class="read-more" href="{% url 'blogDetailPage' article.slug %}">Read</a>
+      </div>
+    </div>
+  </article>
+{% empty %}
+  <p class="no-posts">No Blogs on this topic available yet. Stay tuned for new content!</p>
+{% endfor %}

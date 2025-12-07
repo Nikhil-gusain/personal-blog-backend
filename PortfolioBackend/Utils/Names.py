@@ -33,6 +33,7 @@ class NAMES:
 
     #blog
     EXCERPT='excerpt'
+    SLUG='slug'
     COVER_IMAGE='coverImage'
     CONTENT='content'
     READ_MIN='readMin'

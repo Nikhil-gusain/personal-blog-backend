@@ -3,6 +3,7 @@ from django_quill.fields import QuillField
 from PortfolioBackend.Utils.Helpers import Helpers
 from django.contrib.auth.models import User
 from django_quill.fields import QuillField
+from django.utils.text import slugify
 # Create your models here.
 
 class Pages(models.Model):
@@ -28,28 +29,49 @@ class Skills(models.Model):
 
 class Blogs(models.Model):
     title = models.CharField(max_length=200)
+    slug = models.CharField(unique=True,max_length=300,null = True,blank=True)
     excerpt = models.TextField(help_text="Meta description for the blog post")
     coverImage = models.URLField(max_length=2500, blank=True, null=True)
     temp_image = models.ImageField(upload_to='temp/', blank=True, null=True)
     content = QuillField()
     readMin = models.IntegerField(default=0)
-    category = models.ForeignKey(Skills, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Skills, on_delete=models.SET_NULL, null=True,related_name="skillBlog")
     createdAt = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
     
     def save(self, *args, **kwargs):
+    # Auto-generate slug if not set
+        if not self.slug:
+            base_slug = slugify(self.title)
+            unique_slug = base_slug
+            num = 1
+
+            # Ensure slug is unique
+            while Blogs.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{num}"
+                num += 1
+
+            self.slug = unique_slug
+
+        # Calculate read time
         self.readMin = Helpers.CalculateReadingTime(self.content.html)
 
-        # Upload to Google Drive if a file is uploaded
         super().save(*args, **kwargs)
-        if self.temp_image:
-            gdrive_url = Helpers.uploadToDrive(file_path=self.temp_image.path,file_name= self.temp_image.name,folder_id='1E4WMmR5g8GIiT6DLrndCtoJTFqSwcgM2')
-            self.coverImage = gdrive_url
-            self.temp_image.delete(save=False)  # Delete local file
 
-        super().save(*args, **kwargs)
+        # Handle Google Drive upload
+        if self.temp_image:
+            gdrive_url = Helpers.uploadToDrive(
+                file_path=self.temp_image.path,
+                file_name=self.temp_image.name,
+                folder_id='1E4WMmR5g8GIiT6DLrndCtoJTFqSwcgM2'
+            )
+            self.coverImage = gdrive_url
+            self.temp_image.delete(save=False)
+
+            super().save(*args, **kwargs)
+
 
 class SkillSection(models.Model):
     sectionTitle = models.CharField(max_length=200)
