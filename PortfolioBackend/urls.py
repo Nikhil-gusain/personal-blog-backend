@@ -26,6 +26,5 @@ urlpatterns = [
     path('blog/<str:titleSlug>',views.blogDetail,name="blogDetailPage"),
     path('tag/<str:tagName>',views.blogByTag,name="blogbytag"),
     path('api/',include('portfolioApi.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

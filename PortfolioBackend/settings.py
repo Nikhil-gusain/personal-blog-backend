@@ -156,7 +156,8 @@ AWS_QUERYSTRING_AUTH = True  # public URLs without ?AWSAccessKeyId
 # Django 4.2+ storage system
 STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.s3.S3Storage",
+        # "BACKEND": "storages.backends.s3.S3Storage",
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
             "bucket_name": AWS_STORAGE_BUCKET_NAME,
             "region_name": AWS_S3_REGION_NAME,
@@ -164,7 +165,8 @@ STORAGES = {
         },
     },
     "staticfiles": {
-        "BACKEND": "storages.backends.s3.S3Storage",
+        # "BACKEND": "storages.backends.s3.S3Storage",
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
             "bucket_name": AWS_STORAGE_BUCKET_NAME,
             "region_name": AWS_S3_REGION_NAME,
@@ -174,11 +176,12 @@ STORAGES = {
     },
 }
 
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # Static + Media URLs
-# STATIC_URL = "https://%s.s3.amazonaws.com/static/" % AWS_STORAGE_BUCKET_NAME
+STATIC_URL = "https://%s.s3.amazonaws.com/static/" % AWS_STORAGE_BUCKET_NAME
 MEDIA_URL  = "https://%s.s3.amazonaws.com/" % AWS_STORAGE_BUCKET_NAME
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR  / 'static_root'
 
