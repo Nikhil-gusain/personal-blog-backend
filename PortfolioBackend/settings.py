@@ -16,7 +16,7 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 import dj_database_url
-
+# print(f'Env variables : {os.environ}')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -137,15 +137,55 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# AWS_ACCESS_KEY_ID = env('AWS_KEY')
+# AWS_SECRET_ACCESS_KEY = env('AWS_SECRETE_KEY')
+# AWS_STORAGE_BUCKET_NAME = env('S3_BUCKET_NAME')
+# AWS_S3_REGION_NAME = env('S3_REGION')
+# DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
+# STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
+# AWS_S3_FILE_OVERWRITE = True
+# AWS_DEFAULT_ACL = None
+
+AWS_ACCESS_KEY_ID = env("AWS_KEY")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRETE_KEY")
+AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME")
+AWS_S3_REGION_NAME = env("S3_REGION")
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_QUERYSTRING_AUTH = True  # public URLs without ?AWSAccessKeyId
+
+# Django 4.2+ storage system
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": AWS_STORAGE_BUCKET_NAME,
+            "region_name": AWS_S3_REGION_NAME,
+            "default_acl": None,
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": AWS_STORAGE_BUCKET_NAME,
+            "region_name": AWS_S3_REGION_NAME,
+            "default_acl": None,
+            "location": "static",
+        },
+    },
+}
+
+# Static + Media URLs
+# STATIC_URL = "https://%s.s3.amazonaws.com/static/" % AWS_STORAGE_BUCKET_NAME
+MEDIA_URL  = "https://%s.s3.amazonaws.com/" % AWS_STORAGE_BUCKET_NAME
+
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-STATIC_ROOT = "/PortfolioBackend/staticfiles"
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR  / 'static_root'
+
 
 # STATIC_ROOT = BASE_DIR / "staticfiles"
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')    
+# MEDIA_URL = 'media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')    
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
