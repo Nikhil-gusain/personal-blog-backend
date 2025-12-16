@@ -134,7 +134,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-CORS_ALLOW_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [
     "https://blog.nikhilgusain.in",
     "http://blog.nikhilgusain.in",
 ]
