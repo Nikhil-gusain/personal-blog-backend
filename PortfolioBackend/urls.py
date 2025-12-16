@@ -1,3 +1,4 @@
+
 """
 URL configuration for PortfolioBackend project.
 
@@ -19,12 +20,21 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+from django.contrib.sitemaps.views import sitemap
+from PortfolioBackend.sitemap import BlogSitemap,StaticViewSitemap,TagSitemap
+
+sitemaps = {
+    'blogs':BlogSitemap,
+    'static':StaticViewSitemap,
+    'tags':TagSitemap
+}
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('blogs/', admin.site.urls),
     path('',views.blogs,name="blogPage"),
     path('blog/<str:titleSlug>',views.blogDetail,name="blogDetailPage"),
     path('tag/<str:tagName>',views.blogByTag,name="blogbytag"),
     path('api/',include('portfolioApi.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from portfolioApi.models import Blogs,Skills
+from portfolioApi.models import Blogs,Skills,About
 from django.core.paginator import Paginator
 
 def blogs(request):
@@ -8,21 +8,23 @@ def blogs(request):
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    resume = About.objects.first().cvLink
 
     skills = Skills.objects.all()
 
     data = {
         "articles": page_obj,
         "page_obj": page_obj,
-        "tags":skills
+        "tags":skills,
+        "resume": resume
     }
 
     return render(request, 'Blogs/blogs.html',data)
 
 def blogByTag(request,tagName):
-    print(tagName)
+    # print(tagName)
     skill = Skills.objects.filter(name=tagName).first()
-    print(skill)
+    # print(skill)
     blogs = skill.skillBlog.all().order_by('-createdAt')
 
     paginator = Paginator(blogs, 5)
@@ -32,10 +34,14 @@ def blogByTag(request,tagName):
 
     skills = Skills.objects.all()
 
+    resume = About.objects.first().cvLink
+    
+
     data = {
         "articles": page_obj,
         "page_obj": page_obj,
-        "tags":skills
+        "tags":skills,
+        "resume": resume
     }
     return render(request, 'Blogs/blogs.html',data)
 

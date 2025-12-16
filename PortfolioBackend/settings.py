@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'rest_framework',
     'django_quill',
@@ -133,7 +134,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+CORS_ALLOW_ORIGINS = [
+    "https://blog.nikhilgusain.in",
+    "http://blog.nikhilgusain.in",
+]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 

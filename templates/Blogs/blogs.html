@@ -1,6 +1,7 @@
 {% extends "index.html"%} {% load static%} {% block main %}
 <main class="container">
-  {% include "Blogs/components/header.html" %} {% comment %}
+  {% include "Blogs/components/header.html" with resume=resume %} 
+  {% comment %}
   <header class="site-header">
     <div class="logo">
       <div class="brand-mark">NG</div>
